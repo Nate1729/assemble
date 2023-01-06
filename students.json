@@ -1,0 +1,37 @@
+[{
+    "name": "Bruce Willis",
+    "avoid": []
+  },
+  {
+    "name": "John Doe",
+    "avoid": ["Jane Doe"]
+  },
+  {
+    "name": "Jane Doe",
+    "avoid": []
+  },
+  {
+    "name": "Fiona Meyer",
+    "avoid": []
+  },
+  {
+    "name": "Skyla Reese",
+    "avoid": []
+  },
+  {
+    "name": "Elif Young",
+    "avoid": ["Roy Mcgee", "Keenan Sims"]
+  },
+  {
+    "name": "Roy Mcgee",
+    "avoid": []
+  },
+  {
+    "name": "Keenan Sims",
+    "avoid": []
+  },
+  {
+    "name": "Travis Morse",
+    "avoid": []
+  }
+]
