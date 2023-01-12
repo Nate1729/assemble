@@ -5,13 +5,13 @@ use serde::Deserialize;
 #[derive(Clone, Debug, Deserialize)]
 pub struct Student {
     pub name: String,
-    avoid: Vec<String>
+    avoid: Vec<String>,
 }
 
 impl Student {
     pub fn can_work_with(&self, other_student: &Self) -> bool {
         if other_student.avoid.contains(&self.name) {
-            return false
+            return false;
         }
         true
     }
