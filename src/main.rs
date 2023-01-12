@@ -1,7 +1,10 @@
-use std::fs;
+use std::process::exit;
+use std::{env, fs};
 
 use itertools::Itertools;
 
+mod parser;
+use parser::parse_args;
 mod student;
 use student::Student;
 
@@ -30,7 +33,14 @@ fn validate_student_list(students: &Vec<Student>, group_size: usize) -> bool {
 }
 
 fn main() {
-    let data_in = fs::read_to_string("students.json").unwrap();
+    let file_path = match parse_args(env::args()) {
+        Ok(s) => s,
+        Err(s) => {
+            eprintln!("{}", s);
+            exit(1);
+        }
+    };
+    let data_in = fs::read_to_string(file_path).unwrap();
     let mut students: Vec<Student> = serde_json::from_str(&data_in).unwrap();
     students.sort();
     let student_cnt = students.len();
