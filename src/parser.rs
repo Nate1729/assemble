@@ -3,12 +3,19 @@
 pub fn parse_args(iter: impl Iterator<Item = String>) -> Result<String, &'static str> {
     let args: Vec<String> = iter.collect();
     if args.len() == 1 {
-        return Err("No file name recieved!");
+        return Ok(String::from("students.json"));
     } else if args.len() > 2 {
         return Err("Unrecognized command. Too many inputs were provided!");
     }
 
     return Ok(args[1].clone());
+}
+
+/// Print to stdout the help screen.
+/// This explains how to use
+/// `assemble`.
+pub fn print_help_screen() {
+    println!("\nusage: assemble <file>");
 }
 
 #[cfg(test)]
@@ -19,7 +26,7 @@ mod tests {
     fn test_parse_args_iterator_size_1() {
         // Arrange
         let test_iter = vec![String::from("Hi")].into_iter();
-        let expected: Result<String, &'static str> = Err("No file name recieved!");
+        let expected = Ok(String::from("students.json"));
 
         // Act
         let result = parse_args(test_iter);

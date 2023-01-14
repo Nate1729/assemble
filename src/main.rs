@@ -4,7 +4,7 @@ use std::{env, fs};
 use itertools::Itertools;
 
 mod parser;
-use parser::parse_args;
+use parser::{parse_args, print_help_screen};
 mod student;
 use student::Student;
 
@@ -37,6 +37,7 @@ fn main() {
         Ok(s) => s,
         Err(s) => {
             eprintln!("{}", s);
+            print_help_screen();
             exit(1);
         }
     };
