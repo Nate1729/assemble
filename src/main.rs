@@ -40,6 +40,7 @@ fn main() {
             exit(1);
         }
     };
+
     let data_in = fs::read_to_string(file_path).unwrap();
     let mut students: Vec<Student> = serde_json::from_str(&data_in).unwrap();
     students.sort();
