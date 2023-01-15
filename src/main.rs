@@ -1,46 +1,10 @@
 use std::process::exit;
 use std::{env, fs};
 
-use itertools::Itertools;
-
 mod parser;
 use parser::{parse_args, print_help_screen};
 mod student;
-use student::Student;
-
-fn validate_group(group: &[&Student]) -> bool {
-    for pair in group.iter().combinations(2) {
-        if !pair[0].can_work_with(pair[1]) {
-            return false;
-        }
-        if !pair[1].can_work_with(pair[0]) {
-            return false;
-        }
-    }
-    true
-}
-
-fn validate_arrangement(students: &Vec<&Student>, group_size: usize) -> bool {
-    let n_groups = students.len() / group_size;
-
-    for offset in 0..n_groups {
-        let group = &students[offset * group_size..(offset + 1) * group_size];
-        if !validate_group(group) {
-            return false;
-        }
-    }
-    true
-}
-
-fn find_valid_arrangement(students: &[Student], group_size: usize) -> Option<Vec<&Student>> {
-    for arrangement in students.into_iter().permutations(students.len()) {
-        if validate_arrangement(&arrangement, group_size) {
-            return Some(arrangement);
-        }
-    }
-
-    return None;
-}
+use student::{find_valid_arrangement, Student};
 
 fn main() {
     // Retrieve file path
