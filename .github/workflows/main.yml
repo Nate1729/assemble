@@ -15,3 +15,40 @@ jobs:
       - run: rustup update stable && rustup default stable
       - run: rustup component add rustfmt
       - run: cargo fmt --check
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - name: Linux x86_64 stable
+            os: ubuntu-latest
+            rust: stable
+            other: i868-unknown-linux-gnu
+          - name: Linux x86_64 beta
+            os: ubuntu-latest
+            rust: beta
+            other: i868-unknown-linux-gnu
+          - name: Linux x86_64 nightly
+            os: ubuntu-latest
+            rust: nightly
+            other: i868-unknown-linux-gnu
+          - name: macOS x86_64 stable
+            os: macos-latest
+            rust: stable
+            other: x86_64-apple-ios
+          - name: Windows x86_64 MSVC stable
+            os: windows-latest
+            rust: stable-msvc
+            other: i686-pc-windows-msvc
+          - name: Windows x86_64 gnu nightly
+            os: windows-latest
+            rust: nightly-gnu
+            other: i686-pc-windows-gnu
+      name: Tests ${{ matrix.name }}
+      steps:
+        - uses: actions/checkout@v3
+        - run: rustup self update
+        - run: rustup targer add ${{ matrix.other }}
+        - run: rustup component add rustc-dev llvm-tools-preview rust-docs
+          if: startsWith(matrix.rust, 'nightly')
+        - run: cargo test --features 'deny-warnings'
