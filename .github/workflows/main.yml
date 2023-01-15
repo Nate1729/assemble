@@ -19,7 +19,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-      steps:
-        - uses: actions/checkout@v3
-        - run: rustup update stable && rustup default stable
-        - run: cargo test --features 'deny-warnings'
+    steps:
+      - uses: actions/checkout@v3
+      - run: rustup update stable && rustup default stable
+      - run: cargo test --features 'deny-warnings'
