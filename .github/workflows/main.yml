@@ -20,7 +20,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-     name: Tests ${{ matrix.name }}
       steps:
         - uses: actions/checkout@v3
         - run: rustup update stable && rustup default stable
