@@ -1,5 +1,5 @@
 # Assemble (powered by 🦀)
-[![CI](https://github.com/Nate1729/assemble/actions/workflows.main.yml/badge.svg)]
+![CI](https://github.com/Nate1729/assemble/actions/workflows/main.yml/badge.svg)
 
 This is a small tool for teachers to create student groups. This
 tool allows for students to be excluded from being in the same group.
