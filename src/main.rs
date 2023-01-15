@@ -8,7 +8,7 @@ use parser::{parse_args, print_help_screen};
 mod student;
 use student::Student;
 
-fn validate_group(group: &[Student]) -> bool {
+fn validate_group(group: &[&Student]) -> bool {
     for pair in group.iter().combinations(2) {
         if !pair[0].can_work_with(pair[1]) {
             return false;
@@ -20,7 +20,7 @@ fn validate_group(group: &[Student]) -> bool {
     true
 }
 
-fn validate_student_list(students: &Vec<Student>, group_size: usize) -> bool {
+fn validate_arrangement(students: &Vec<&Student>, group_size: usize) -> bool {
     let n_groups = students.len() / group_size;
 
     for offset in 0..n_groups {
@@ -32,7 +32,18 @@ fn validate_student_list(students: &Vec<Student>, group_size: usize) -> bool {
     true
 }
 
+fn find_valid_arrangement(students: &[Student], group_size: usize) -> Option<Vec<&Student>> {
+    for arrangement in students.into_iter().permutations(students.len()) {
+        if validate_arrangement(&arrangement, group_size) {
+            return Some(arrangement);
+        }
+    }
+
+    return None;
+}
+
 fn main() {
+    // Retrieve file path
     let file_path = match parse_args(env::args()) {
         Ok(s) => s,
         Err(s) => {
@@ -46,22 +57,24 @@ fn main() {
     let mut students: Vec<Student> = serde_json::from_str(&data_in).unwrap();
     students.sort();
     let student_cnt = students.len();
+    let group_size = 4;
 
-    for arrangement in students.into_iter().permutations(student_cnt) {
-        if validate_student_list(&arrangement, 4) {
+    // Find solution
+    match find_valid_arrangement(&students, group_size) {
+        None => println!("I couldn't find a solution!"),
+        Some(a) => {
             let n_groups = student_cnt / 4;
 
             for offset in 0..n_groups {
                 println!("=== Group {} ===", offset + 1);
                 println!(
                     "{}\n{}\n{}\n{}",
-                    arrangement[offset * 4].name,
-                    arrangement[offset * 4 + 1].name,
-                    arrangement[offset * 4 + 2].name,
-                    arrangement[offset * 4 + 3].name
+                    a[offset * 4].name,
+                    a[offset * 4 + 1].name,
+                    a[offset * 4 + 2].name,
+                    a[offset * 4 + 3].name
                 )
             }
-            break;
         }
     }
 }
