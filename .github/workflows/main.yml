@@ -1,5 +1,4 @@
 # main.yml
-
 name: CI # Continuous Integration
 on:
   push:
