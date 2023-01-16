@@ -18,7 +18,16 @@ fn main() {
         }
     };
 
-    let data_in = fs::read_to_string(file_path).unwrap();
+    let data_in = match fs::read_to_string(&file_path) {
+        Ok(d) => d,
+        _ => {
+            eprintln!(
+                "Error reading {:?}! Maybe {:?} doesn't exist?",
+                &file_path, &file_path
+            );
+            exit(1);
+        }
+    };
     let mut students: Vec<Student> = serde_json::from_str(&data_in).unwrap();
     students.sort();
     let student_cnt = students.len();
