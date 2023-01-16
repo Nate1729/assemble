@@ -1,3 +1,4 @@
+use std::io::prelude::*;
 use std::process::exit;
 use std::{env, fs};
 
@@ -27,17 +28,21 @@ fn main() {
     match find_valid_arrangement(&students, group_size) {
         None => println!("I couldn't find a solution!"),
         Some(a) => {
-            let n_groups = student_cnt / 4;
+            println!("Found a valid arrangement");
+            let n_groups = student_cnt / group_size;
+            let mut output_file_handle = fs::File::create("groups.txt").unwrap();
 
             for offset in 0..n_groups {
-                println!("=== Group {} ===", offset + 1);
-                println!(
-                    "{}\n{}\n{}\n{}",
+                let header = format!("=== Group {} ===\n", offset + 1);
+                output_file_handle.write(header.as_bytes()).unwrap();
+                let names = format!(
+                    "{}\n{}\n{}\n{}\n\n",
                     a[offset * 4].name,
                     a[offset * 4 + 1].name,
                     a[offset * 4 + 2].name,
                     a[offset * 4 + 3].name
-                )
+                );
+                output_file_handle.write(names.as_bytes()).unwrap();
             }
         }
     }
