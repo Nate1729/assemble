@@ -1,38 +1,14 @@
+use std::io::prelude::*;
 use std::process::exit;
 use std::{env, fs};
-
-use itertools::Itertools;
 
 mod parser;
 use parser::{parse_args, print_help_screen};
 mod student;
-use student::Student;
-
-fn validate_group(group: &[Student]) -> bool {
-    for pair in group.iter().combinations(2) {
-        if !pair[0].can_work_with(pair[1]) {
-            return false;
-        }
-        if !pair[1].can_work_with(pair[0]) {
-            return false;
-        }
-    }
-    true
-}
-
-fn validate_student_list(students: &Vec<Student>, group_size: usize) -> bool {
-    let n_groups = students.len() / group_size;
-
-    for offset in 0..n_groups {
-        let group = &students[offset * group_size..(offset + 1) * group_size];
-        if !validate_group(group) {
-            return false;
-        }
-    }
-    true
-}
+use student::{find_valid_arrangement, Student};
 
 fn main() {
+    // Retrieve file path
     let file_path = match parse_args(env::args()) {
         Ok(s) => s,
         Err(s) => {
@@ -42,26 +18,41 @@ fn main() {
         }
     };
 
-    let data_in = fs::read_to_string(file_path).unwrap();
+    let data_in = match fs::read_to_string(&file_path) {
+        Ok(d) => d,
+        _ => {
+            eprintln!(
+                "Error reading {:?}! Maybe {:?} doesn't exist?",
+                &file_path, &file_path
+            );
+            exit(1);
+        }
+    };
     let mut students: Vec<Student> = serde_json::from_str(&data_in).unwrap();
     students.sort();
     let student_cnt = students.len();
+    let group_size = 4;
 
-    for arrangement in students.into_iter().permutations(student_cnt) {
-        if validate_student_list(&arrangement, 4) {
-            let n_groups = student_cnt / 4;
+    // Find solution
+    match find_valid_arrangement(&students, group_size) {
+        None => println!("I couldn't find a solution!"),
+        Some(a) => {
+            println!("Found a valid arrangement");
+            let n_groups = student_cnt / group_size;
+            let mut output_file_handle = fs::File::create("groups.txt").unwrap();
 
             for offset in 0..n_groups {
-                println!("=== Group {} ===", offset + 1);
-                println!(
-                    "{}\n{}\n{}\n{}",
-                    arrangement[offset * 4].name,
-                    arrangement[offset * 4 + 1].name,
-                    arrangement[offset * 4 + 2].name,
-                    arrangement[offset * 4 + 3].name
-                )
+                let header = format!("=== Group {} ===\n", offset + 1);
+                output_file_handle.write(header.as_bytes()).unwrap();
+                let names = format!(
+                    "{}\n{}\n{}\n{}\n\n",
+                    a[offset * 4].name,
+                    a[offset * 4 + 1].name,
+                    a[offset * 4 + 2].name,
+                    a[offset * 4 + 3].name
+                );
+                output_file_handle.write(names.as_bytes()).unwrap();
             }
-            break;
         }
     }
 }
